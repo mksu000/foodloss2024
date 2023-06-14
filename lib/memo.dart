@@ -4,18 +4,19 @@ class MemoModel {
   static const String tableMemos = 'memos';
   static const String columnId = 'id';
   static const String columnContent = 'content';
-  static const String columitem = 'item';
+  static const String columcat = 'cat';
 
   late Database _database;
 
   Future<void> init() async {
     _database = await openDatabase(
-      'memo.db',
+      'food2S.db',
       version: 1,
       onCreate: (db, version) {
         return db.execute('''
           CREATE TABLE $tableMemos (
             $columnId TEXT PRIMARY KEY,
+            $columcat TEXT,
             $columnContent TEXT NOT NULL
           )
         ''');

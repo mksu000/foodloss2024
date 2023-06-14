@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'memo.dart';
 import 'DBtable.dart';
-
+//miki
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final memoModel = MemoModel();
@@ -13,8 +13,8 @@ void main() async {
 class Memo {
   final String id;
   final String content;
-
-  Memo(this.id, this.content);
+  final String cat;
+  Memo(this.id, this.cat ,this.content);
 }
 
 class MemoApp extends StatelessWidget {
@@ -60,7 +60,7 @@ class _MemoListScreenState extends State<MemoListScreen>
     final memos = await widget.memoModel.getMemos();
     setState(() {
       this.memos = memos
-          .map((memo) => Memo(memo[MemoModel.columnId], memo[MemoModel.columnContent]))
+          .map((memo) => Memo(memo[MemoModel.columnId], memo[MemoModel.columcat],memo[MemoModel.columnContent]))
           .toList();
     });
   }

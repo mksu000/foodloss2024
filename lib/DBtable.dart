@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:foodloss2024/main.dart';
 import 'memo.dart';
 class MemoListScreen2 extends StatefulWidget {
 
@@ -47,12 +48,14 @@ class _MemoListScreen2State extends State<MemoListScreen2> {
             child: DataTable(
               columns: const [
                 DataColumn(label: Text('ID')),
+                DataColumn(label: Text('カテゴリ')),
                 DataColumn(label: Text('Content')),
                 
               ],
               rows: memos.map((memo) {
                 return DataRow(cells: [
                   DataCell(Text(memo[MemoModel.columnId])),
+                  DataCell(Text("aaaa")),
                   DataCell(Text(memo[MemoModel.columnContent])),
                 ]);
               }).toList(),
