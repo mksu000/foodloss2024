@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'memo.dart';
 import 'DBtable.dart';
-
+//main
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final memoModel = MemoModel();
