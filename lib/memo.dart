@@ -1,20 +1,20 @@
 import 'package:sqflite/sqflite.dart';
 
-class MemoModel {
-  static const String tableMemos = 'memos';
+class FoodModel {
+  static const String tableFoods = 'foods';
   static const String columnId = 'id';
   static const String columnContent = 'content';
-  static const String columcat = 'cat';
+  static const String? columcat = 'cat';
 
   late Database _database;
 
   Future<void> init() async {
     _database = await openDatabase(
-      'food2S.db',
+      'foodloss.db',
       version: 1,
       onCreate: (db, version) {
         return db.execute('''
-          CREATE TABLE $tableMemos (
+          CREATE TABLE $tableFoods (
             $columnId TEXT PRIMARY KEY,
             $columcat TEXT,
             $columnContent TEXT NOT NULL
@@ -24,13 +24,13 @@ class MemoModel {
     );
   }
 
-  Future<List<Map<String, dynamic>>> getMemos() async {
-    return _database.query(tableMemos);
+  Future<List<Map<String, dynamic>>> getFoods() async {
+    return _database.query(tableFoods);
   }
 
-  Future<void> addMemo(String id, String content) async {
+  Future<void> addFood(String id, String content) async {
     await _database.insert(
-      tableMemos,
+      tableFoods,
       {
         columnId: id,
         columnContent: content,
@@ -38,9 +38,9 @@ class MemoModel {
     );
   }
 
-  Future<void> updateMemo(String id, String content) async {
+  Future<void> updateFood(String id, String content) async {
     await _database.update(
-      tableMemos,
+      tableFoods,
       {
         columnContent: content,
       },
@@ -49,9 +49,9 @@ class MemoModel {
     );
   }
 
-  Future<void> deleteMemo(String id) async {
+  Future<void> deleteFood(String id) async {
     await _database.delete(
-      tableMemos,
+      tableFoods,
       where: '$columnId = ?',
       whereArgs: [id],
     );
