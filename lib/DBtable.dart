@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'memo.dart';
+import 'package:foodloss2024/top.dart';
+
 class MemoListScreen2 extends StatefulWidget {
 
   final MemoModel memoModel;
