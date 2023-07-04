@@ -1,23 +1,23 @@
 import 'package:flutter/material.dart';
-import 'memo.dart';
-//import 'package:foodloss2024/sign.dart';
+import 'package:foodloss2024/main.dart';
+import 'package:foodloss2024/memo.dart';
 
-class MemoListScreen2 extends StatefulWidget {
+class FoodListScreen2 extends StatefulWidget {
 
-  final MemoModel memoModel;
+  final FoodModel foodModel;
 
-  MemoListScreen2({required this.memoModel});
+  FoodListScreen2({required this.foodModel});
 
   @override
-  _MemoListScreen2State createState() => _MemoListScreen2State();
+  _FoodListScreen2State createState() => _FoodListScreen2State();
 }
 
-class _MemoListScreen2State extends State<MemoListScreen2> {
+class _FoodListScreen2State extends State<FoodListScreen2> {
 
   @override
   void initState() {
     super.initState();
-    widget.memoModel.init().then((_) {
+    widget.foodModel.init().then((_) {
       // Force a rebuild after initialization
       setState(() {});
     });
@@ -27,10 +27,10 @@ class _MemoListScreen2State extends State<MemoListScreen2> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Memos'),
+        title: Text('Foods'),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: widget.memoModel.getMemos(),
+        future: widget.foodModel.getFoods(),
         builder: (BuildContext context, AsyncSnapshot<List<Map<String, dynamic>>> snapshot) {
           if (snapshot.connectionState != ConnectionState.done) {
             // The future is still running
@@ -49,13 +49,15 @@ class _MemoListScreen2State extends State<MemoListScreen2> {
             child: DataTable(
               columns: const [
                 DataColumn(label: Text('ID')),
+                DataColumn(label: Text('カテゴリ')),
                 DataColumn(label: Text('Content')),
                 
               ],
-              rows: memos.map((memo) {
+              rows: memos.map((food) {
                 return DataRow(cells: [
-                  DataCell(Text(memo[MemoModel.columnId])),
-                  DataCell(Text(memo[MemoModel.columnContent])),
+                  DataCell(Text(food[FoodModel.columnId])),
+                  DataCell(Text("aaaa")),
+                  DataCell(Text(food[FoodModel.columnContent])),
                 ]);
               }).toList(),
             ),
@@ -64,11 +66,11 @@ class _MemoListScreen2State extends State<MemoListScreen2> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          final content = await _showAddMemoDialog();
+          final content = await _showAddFoodDialog();
           if (content != null) {
             // Use the current time as a unique ID
             final id = DateTime.now().millisecondsSinceEpoch.toString();
-            await widget.memoModel.addMemo(id, content);
+            await widget.foodModel.addFood(id, content);
             setState(() {});
           }
         },
@@ -77,13 +79,13 @@ class _MemoListScreen2State extends State<MemoListScreen2> {
     );
   }
 
-  Future<String?> _showAddMemoDialog() async {
+  Future<String?> _showAddFoodDialog() async {
     String? newContent;
     return showDialog<String>(
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Add a new memo'),
+          title: Text('Add a new food'),
           content: TextField(
             onChanged: (value) {
               newContent = value;

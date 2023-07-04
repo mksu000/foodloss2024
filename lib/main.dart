@@ -1,31 +1,28 @@
 import 'package:flutter/material.dart';
-import 'memo.dart';
+import 'package:foodloss2024/memo.dart';
+import 'package:foodloss2024/memo.dart';
+
 import 'DBtable.dart';
-
-//import 'package:foodloss2024/top.dart';
-
-//main
+//miki
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final memoModel = MemoModel();
-  await memoModel.init();
+  final foodModel = FoodModel();
+  await foodModel.init();
 
-  runApp(MemoApp(memoModel: memoModel));
+  runApp(FoodApp(foodModel: foodModel));
 }
 
-
-
-class Memo {
+class Food {
   final String id;
   final String content;
-
-  Memo(this.id, this.content);
+  final String cat;
+  Food(this.id, this.cat ,this.content);
 }
 
-class MemoApp extends StatelessWidget {
-  final MemoModel memoModel;
+class FoodApp extends StatelessWidget {
+  final FoodModel foodModel;
 
-  const MemoApp({required this.memoModel});
+  const FoodApp({required this.foodModel});
 
   @override
   Widget build(BuildContext context) {
@@ -35,37 +32,37 @@ class MemoApp extends StatelessWidget {
         primarySwatch: Colors.deepPurple,
         fontFamily: 'Roboto',
       ),
-      home: MemoListScreen(memoModel: memoModel),
+      home: FoodListScreen(foodModel: foodModel),
     );
   }
 }
 
-class MemoListScreen extends StatefulWidget {
-  final MemoModel memoModel;
+class FoodListScreen extends StatefulWidget {
+  final FoodModel foodModel;
 
-  const MemoListScreen({required this.memoModel});
+  const FoodListScreen({required this.foodModel});
 
   @override
-  _MemoListScreenState createState() => _MemoListScreenState();
+  _FoodListScreenState createState() => _FoodListScreenState();
 }
 
-class _MemoListScreenState extends State<MemoListScreen>
+class _FoodListScreenState extends State<FoodListScreen>
     with SingleTickerProviderStateMixin {
-  List<Memo> memos = [];
+  List<Food> foods = [];
   TabController? _tabController;
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
-    _loadMemos();
+    _loadFoods();
   }
 
-  Future<void> _loadMemos() async {
-    final memos = await widget.memoModel.getMemos();
+  Future<void> _loadFoods() async {
+    final foods = await widget.foodModel.getFoods();
     setState(() {
-      this.memos = memos
-          .map((memo) => Memo(memo[MemoModel.columnId], memo[MemoModel.columnContent]))
+      this.foods = foods
+          .map((food) => Food(food[FoodModel.columnId], "kkkkk",food[FoodModel.columnContent]))
           .toList();
     });
   }
@@ -74,7 +71,7 @@ class _MemoListScreenState extends State<MemoListScreen>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Memo App'),
+        title: const Text('foodloss App'),
         actions: [
           IconButton(
             icon: const Icon(Icons.settings),
@@ -88,10 +85,10 @@ class _MemoListScreenState extends State<MemoListScreen>
         controller: _tabController,
         children: [
           ListView.builder(
-            itemCount: memos.length,
+            itemCount: foods.length,
             itemBuilder: (context, index) {
               return Dismissible(
-                key: Key(memos[index].id),
+                key: Key(foods[index].id),
                 direction: DismissDirection.endToStart,
                 background: Container(
                   color: Colors.red,
@@ -103,7 +100,7 @@ class _MemoListScreenState extends State<MemoListScreen>
                   ),
                 ),
                 onDismissed: (direction) {
-                  _deleteMemo(index);
+                  _deleteFood(index);
                 },
                 child: Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -114,7 +111,7 @@ class _MemoListScreenState extends State<MemoListScreen>
                     ),
                     child: ListTile(
                       title: Text(
-                        memos[index].content,
+                        foods[index].content,
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
@@ -131,7 +128,7 @@ class _MemoListScreenState extends State<MemoListScreen>
                         color: Colors.deepPurple,
                       ),
                       onTap: () {
-                        _navigateToMemoDetail(context, index);
+                        _navigateToFoodDetail(context, index);
                       },
                     ),
                   ),
@@ -145,7 +142,7 @@ class _MemoListScreenState extends State<MemoListScreen>
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          _showAddMemoDialog(context);
+          _showAddFoodDialog(context);
         },
         child: const Icon(Icons.add),
         backgroundColor: Colors.deepPurple,
@@ -184,7 +181,7 @@ class _MemoListScreenState extends State<MemoListScreen>
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => MemoListScreen2(memoModel: widget.memoModel),
+                    builder: (context) => FoodListScreen2(foodModel: widget.foodModel),
                   ),
                 );
               },
@@ -230,38 +227,38 @@ class _MemoListScreenState extends State<MemoListScreen>
     );
   }
 
-  void _navigateToMemoDetail(BuildContext context, int index) async {
-    final editedMemo = await Navigator.push(
+  void _navigateToFoodDetail(BuildContext context, int index) async {
+    final editedFood = await Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => MemoDetailScreen(memo: memos[index].content),
+        builder: (context) => FoodDetailScreen(food: foods[index].content),
       ),
     ) as String?;
 
-    if (editedMemo != null) {
-      await widget.memoModel.updateMemo(memos[index].id, editedMemo);
-      _loadMemos();
+    if (editedFood != null) {
+      await widget.foodModel.updateFood(foods[index].id, editedFood);
+      _loadFoods();
     }
   }
 
-  void _showAddMemoDialog(BuildContext context) {
+  void _showAddFoodDialog(BuildContext context) {
     showDialog(
       context: context,
       builder: (BuildContext dialogContext) {
-        String newMemo = '';
+        String newFood = '';
         return AlertDialog(
           title: const Text('追加'),
           content: TextField(
             onChanged: (value) {
-              newMemo = value;
+              newFood = value;
             },
           ),
           actions: [
             TextButton(
               onPressed: () async {
                 final id = DateTime.now().millisecondsSinceEpoch.toString();
-                await widget.memoModel.addMemo(id, newMemo);
-                _loadMemos();
+                await widget.foodModel.addFood(id, newFood);
+                _loadFoods();
                 Navigator.of(dialogContext).pop();
               },
               child: const Text('Add'),
@@ -278,28 +275,28 @@ class _MemoListScreenState extends State<MemoListScreen>
     );
   }
 
-  void _deleteMemo(int index) async {
-    await widget.memoModel.deleteMemo(memos[index].id);
-    _loadMemos();
+  void _deleteFood(int index) async {
+    await widget.foodModel.deleteFood(foods[index].id);
+    _loadFoods();
   }
 }
 
-class MemoDetailScreen extends StatefulWidget {
-  final String memo;
+class FoodDetailScreen extends StatefulWidget {
+  final String food;
 
-  const MemoDetailScreen({required this.memo});
+  const FoodDetailScreen({required this.food});
 
   @override
-  _MemoDetailScreenState createState() => _MemoDetailScreenState();
+  _FoodDetailScreenState createState() => _FoodDetailScreenState();
 }
 
-class _MemoDetailScreenState extends State<MemoDetailScreen> {
+class _FoodDetailScreenState extends State<FoodDetailScreen> {
   late TextEditingController _textEditingController;
 
   @override
   void initState() {
     super.initState();
-    _textEditingController = TextEditingController(text: widget.memo);
+    _textEditingController = TextEditingController(text: widget.food);
   }
 
   @override
@@ -312,7 +309,7 @@ class _MemoDetailScreenState extends State<MemoDetailScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Memo Detail'),
+        title: const Text('Food Detail'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16),
@@ -331,7 +328,7 @@ class _MemoDetailScreenState extends State<MemoDetailScreen> {
   }
 
   void _saveMemo(BuildContext context) {
-    final editedMemo = _textEditingController.text;
-    Navigator.pop(context, editedMemo);
+    final editedFood = _textEditingController.text;
+    Navigator.pop(context, editedFood);
   }
 }
