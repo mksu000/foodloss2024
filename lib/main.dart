@@ -3,7 +3,7 @@ import 'package:foodloss2024/memo.dart';
 import 'package:foodloss2024/memo.dart';
 
 import 'DBtable.dart';
-//miki
+//main
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   final foodModel = FoodModel();
