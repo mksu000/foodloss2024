@@ -56,7 +56,7 @@ class _FoodListScreen2State extends State<FoodListScreen2> {
               rows: memos.map((food) {
                 return DataRow(cells: [
                   DataCell(Text(food[FoodModel.columnId])),
-                  DataCell(Text("aaaa")),
+                  DataCell(Text(food[FoodModel.columcat]?? 'まだありません')),
                   DataCell(Text(food[FoodModel.columnContent])),
                 ]);
               }).toList(),
@@ -67,10 +67,12 @@ class _FoodListScreen2State extends State<FoodListScreen2> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           final content = await _showAddFoodDialog();
+          final selectedCat = await _showAddFoodDialog();
           if (content != null) {
             // Use the current time as a unique ID
             final id = DateTime.now().millisecondsSinceEpoch.toString();
-            await widget.foodModel.addFood(id, content);
+
+            await widget.foodModel.addFood(id, content,selectedCat!);
             setState(() {});
           }
         },

@@ -29,7 +29,7 @@ class FoodApp extends StatelessWidget {
     return MaterialApp(
       title: '食品ロス',
       theme: ThemeData(
-        primarySwatch: Colors.deepPurple,
+        primarySwatch: Colors.green,
         fontFamily: 'Roboto',
       ),
       home: FoodListScreen(foodModel: foodModel),
@@ -50,12 +50,31 @@ class _FoodListScreenState extends State<FoodListScreen>
     with SingleTickerProviderStateMixin {
   List<Food> foods = [];
   TabController? _tabController;
+//カテゴリ
+
+  String? selectedCat = '肉・肉加工品';
+  List<String> lists = [];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 2, vsync: this);
     _loadFoods();
+    _loadCats();
+
+  }
+
+  Future<void> _loadCats() async {
+    var dbCat = await widget.foodModel.getCats();
+
+    
+      lists = dbCat
+          .map((row) => row['category'].toString() )
+          .toList();
+    
+        for(var str in lists){
+      print(str);
+    }
   }
 
   Future<void> _loadFoods() async {
@@ -125,7 +144,7 @@ class _FoodListScreenState extends State<FoodListScreen>
                       ),
                       trailing: const Icon(
                         Icons.chevron_right,
-                        color: Colors.deepPurple,
+                        color: Color.fromARGB(255, 60, 183, 58),
                       ),
                       onTap: () {
                         _navigateToFoodDetail(context, index);
@@ -137,6 +156,7 @@ class _FoodListScreenState extends State<FoodListScreen>
             },
           ),
           const Center(child: Text('ロスの内容')),
+          
         ],
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -145,12 +165,12 @@ class _FoodListScreenState extends State<FoodListScreen>
           _showAddFoodDialog(context);
         },
         child: const Icon(Icons.add),
-        backgroundColor: Colors.deepPurple,
+        backgroundColor: Colors.green,
       ),
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         child: Container(
-          color: const Color.fromARGB(255, 136, 106, 188),
+          color: Color.fromARGB(255, 54, 225, 148),
           child: TabBar(
             controller: _tabController,
             tabs: [
@@ -242,38 +262,56 @@ class _FoodListScreenState extends State<FoodListScreen>
   }
 
   void _showAddFoodDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (BuildContext dialogContext) {
-        String newFood = '';
-        return AlertDialog(
-          title: const Text('追加'),
-          content: TextField(
-            onChanged: (value) {
-              newFood = value;
-            },
-          ),
-          actions: [
-            TextButton(
-              onPressed: () async {
-                final id = DateTime.now().millisecondsSinceEpoch.toString();
-                await widget.foodModel.addFood(id, newFood);
-                _loadFoods();
-                Navigator.of(dialogContext).pop();
+  showDialog(
+    context: context,
+    builder: (BuildContext dialogContext) {
+      String newFood = '';
+      return StatefulBuilder(  // add this
+        builder: (BuildContext context, StateSetter setState) {  // and this
+          return AlertDialog(
+            title: const Text('追加'),
+            content: TextField(
+              onChanged: (value) {
+                newFood = value;
               },
-              child: const Text('Add'),
             ),
-            TextButton(
-              onPressed: () {
-                Navigator.of(dialogContext).pop();
-              },
-              child: const Text('Cancel'),
-            ),
-          ],
-        );
-      },
-    );
-  }
+            actions: [
+              DropdownButton<String>(
+                items: lists
+                .map((String list)=>
+                    DropdownMenuItem(value: list ,child: Text(list)))
+                  .toList(),
+                onChanged: (String? value) {
+                  setState(() {
+                    selectedCat = value;
+                  });
+                },
+                value : selectedCat, 
+              ),
+              TextButton(
+                onPressed: () async {
+                  final id = DateTime.now().millisecondsSinceEpoch.toString();
+                  // pass selectedCat to addFood function
+                  await widget.foodModel.addFood(id, newFood, selectedCat!);
+                  _loadFoods();
+                  Navigator.of(dialogContext).pop();
+                },
+                child: const Text('Add'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.of(dialogContext).pop();
+                },
+                child: const Text('Cancel'),
+              ),
+            ],
+          );
+        }  // and this
+      );  // and this
+    },
+  );
+}
+
 
   void _deleteFood(int index) async {
     await widget.foodModel.deleteFood(foods[index].id);
