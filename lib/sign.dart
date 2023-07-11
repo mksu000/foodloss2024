@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 //import 'package:foodloss2024/main.dart';
 
-const Color kAccentColor = Color(0xFFFE7C64);
+const Color kAccentColor = Color.fromARGB(255, 72, 195, 98);
 const Color kBackgroundColor = Color(0xFF19283D);
 const Color kTextColorPrimary = Color(0xFFECEFF1);
 const Color kTextColorSecondary = Color(0xFFB0BEC5);
