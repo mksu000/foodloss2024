@@ -81,7 +81,7 @@ class _FoodListScreenState extends State<FoodListScreen>
     final foods = await widget.foodModel.getFoods();
     setState(() {
       this.foods = foods
-          .map((food) => Food(food[FoodModel.columnId], "kkkkk",food[FoodModel.columnContent]))
+          .map((food) => Food(food[FoodModel.columnId],food[FoodModel.columcat],food[FoodModel.columnContent]))
           .toList();
     });
   }
@@ -233,13 +233,13 @@ class _FoodListScreenState extends State<FoodListScreen>
                 print('Category Name: $categoryName');
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('Add'),
+              child: const Text('追加'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(dialogContext).pop();
               },
-              child: const Text('Cancel'),
+              child: const Text('キャンセル'),
             ),
           ],
         );
@@ -296,13 +296,13 @@ class _FoodListScreenState extends State<FoodListScreen>
                   _loadFoods();
                   Navigator.of(dialogContext).pop();
                 },
-                child: const Text('Add'),
+                child: const Text('追加'),
               ),
               TextButton(
                 onPressed: () {
                   Navigator.of(dialogContext).pop();
                 },
-                child: const Text('Cancel'),
+                child: const Text('キャンセル'),
               ),
             ],
           );

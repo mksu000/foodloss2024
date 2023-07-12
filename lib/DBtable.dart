@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:foodloss2024/main.dart';
 import 'package:foodloss2024/memo.dart';
+import 'clock.dart';
 
 class FoodListScreen2 extends StatefulWidget {
 
@@ -50,7 +51,8 @@ class _FoodListScreen2State extends State<FoodListScreen2> {
               columns: const [
                 DataColumn(label: Text('ID')),
                 DataColumn(label: Text('カテゴリ')),
-                DataColumn(label: Text('Content')),
+                DataColumn(label: Text('食品名')),
+                DataColumn(label: Text('期限'))
                 
               ],
               rows: memos.map((food) {
@@ -58,6 +60,8 @@ class _FoodListScreen2State extends State<FoodListScreen2> {
                   DataCell(Text(food[FoodModel.columnId])),
                   DataCell(Text(food[FoodModel.columcat]?? 'まだありません')),
                   DataCell(Text(food[FoodModel.columnContent])),
+                  DataCell(Text(''))
+                 // DataCell(CountdownTimerWidget(duration: Duration(hours:1 )))
                 ]);
               }).toList(),
             ),
@@ -100,7 +104,7 @@ class _FoodListScreen2State extends State<FoodListScreen2> {
             ),
             TextButton(
               onPressed: () => Navigator.of(context).pop(newContent),
-              child: Text('Add'),
+              child: Text('追加'),
             ),
           ],
         );
